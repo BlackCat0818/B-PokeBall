@@ -112,8 +112,8 @@
 - [×] 尝试修复释放潜影贝时的报错问题（不清楚时什么原因导致的 if (!entityNameSpace)判断成功了但是打印出来没有问题是minecraft:shulker）
 
 
-> Version **0.9.9-beta-2026-08-18**
-- [×] 修复PLand领地兼容的问题
+> Version **0.9.9-beta-2026-08-19**
+- [ ] 修复PLand领地兼容的问题
 
 
 > Version **1.0.0**
