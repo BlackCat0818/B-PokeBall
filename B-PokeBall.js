@@ -407,51 +407,31 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             const [x, y, z] = getOffsetCoordinates([block.pos.x, block.pos.y, block.pos.z], side);
             const spawnPos = new FloatPos(x + 0.5, y, z + 0.5, block.pos.dimid);
 
-            const finalNbt = modifyEntityPosition(nbt, spawnPos.x, spawnPos.y, spawnPos.z);
-            if (finalNbt) {
-                const entity = mc.spawnMob(entityNameSpace, pos); // 先生成
+            // 释放生物主要逻辑：先修改生物的NBT数据，包括坐标，然后再生成生物
+            spawnEntityWithSNBT(entityNameSpace, spawnPos, nbt);
 
-                if (!entity) {
-                    logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: mc.spawnMob 生成生物失败：${entity}`);
-                };
+            const isVillager = villagerTypeNames.includes(entity.type);
+            const professionKey = isVillager && entityNbt.getData("PreferredProfession");
+            const villagerProfession = isVillager
+                ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
+                : "";
 
-                const entityNbt = entity.getNbt();
+            player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(血量${entityHealth})§f!`);
+            logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(血量${entityHealth})，位置：${spawnPos}!`);
 
-                entity.setNbt(finalNbt); // 再用修改坐标后的nbt设置实体
+            writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${entity.blockPos}`);
 
-                //const name = I18nAPI.get(entity.getTranslateKey(), [], "zh_CN");
+            playSoundToPlayer(player, `beacon.activate`, 1, 1.5, 1, player.blockPos);
 
-                if (!entityNbt) {
-                    logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: entity : ${entity} | entityNbt : ${entityNbt}`);
-                    return;
-                };
+            const spawnParticlePos = new FloatPos(x + 0.5, y + 1, z + 0.5, block.pos.dimid);
+            mc.spawnParticle(spawnParticlePos, `minecraft:sonic_explosion`); // minecraft:large_explosion | minecraft:sonic_explosion
 
-                const isVillager = villagerTypeNames.includes(entity.type);
-                const professionKey = isVillager && entityNbt.getData("PreferredProfession");
-                const villagerProfession = isVillager
-                    ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
-                    : "";
-
-                player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(血量${entityHealth})§f!`);
-                logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(血量${entityHealth})，位置：${spawnPos}!`);
-
-                writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${entity.blockPos}`);
-
-                playSoundToPlayer(player, `beacon.activate`, 1, 1.5, 1, player.blockPos);
-
-                const spawnParticlePos = new FloatPos(x + 0.5, y + 1, z + 0.5, block.pos.dimid);
-                mc.spawnParticle(spawnParticlePos, `minecraft:sonic_explosion`); // minecraft:large_explosion | minecraft:sonic_explosion
-
-                if (getConfig("consumeItem")) {
-                    player.getHand().setNull();
-                } else {
-                    player.getHand().set(mc.newItem(projectileItem, 1));
-                }
-                player.refreshItems();
-
+            if (getConfig("consumeItem")) {
+                player.getHand().setNull();
             } else {
-                logger.error(`finalNbt : ${finalNbt}`);
-            };
+                player.getHand().set(mc.newItem(projectileItem, 1));
+            }
+            player.refreshItems();
 
         };
     } catch (error) {
@@ -931,6 +911,46 @@ function getEntitySnbtInItem(item) {
     const entitySnbt = tag.getData("entitySnbt");
     return entitySnbt ? entitySnbt : null;
 }
+
+/**
+ * 
+ * @param {string} entityName 要生成实体的标准类型名
+ * @param {IntPos | FloatPos} pos 要生成实体的坐标
+ * @param {string} SNBT 要生成实体的实体SNBT
+ */
+function spawnEntityWithSNBT(entityName, pos, SNBT) {
+    try {
+        const readNBT = NBT.parseSNBT(SNBT);
+
+        if (!readNBT) {
+            logger.error(`函数：spawnEntityWithSNBT(entityName, pos, SNBT) 生成生物失败：readNBT 为 ${readNBT}`);
+            return false;
+        }
+
+        const newNBT = modifyEntityPosition(readNBT, pos.x, pos.y, pos.z);
+
+        if (!newNBT) {
+            logger.error(`函数：spawnEntityWithSNBT(entityName, pos, SNBT) 生成生物失败：newNBT 为 ${newNBT}`);
+            return false;
+        };
+
+        const entity = mc.spawnMob(entityName, pos);
+
+        if (entity == null || entity == undefined) {
+            logger.error(`函数：spawnEntityWithSNBT(entityName, pos, SNBT) 生成生物失败：entity 为 ${entity}`);
+            return false;
+        }
+
+        entity.setNbt(newNBT);
+
+        return true;
+
+    } catch (error) {
+        logger.error(error.message);
+        logger.error(error.stack);
+        return undefined;
+    }
+};
 
 /**
  * 
