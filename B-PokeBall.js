@@ -732,7 +732,7 @@ mc.listen("onProjectileHitEntity",
                 mc.broadcast(plugin_prefix + `${sourceName} 抓住了一只${capturedEntityName}${vpfs}(血量${entityHealth})!`); // ，位置：${entity.blockPos}
                 logger.warn(`【${type === "dispenser" ? "发射器捕捉" : "玩家捕捉"}】${type !== "dispenser" ? `玩家 ${sourceName}` : sourceName} 成功捕捉了 ${capturedEntityName}${vpfs}(血量${entityHealth})，位置：${entity.blockPos}!`);
 
-                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName}(${entityHealth})`, `${entity.blockPos}`);
+                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName}(血量${entityHealth})`, `${entity.blockPos}`);
 
                 playSoundToPlayer(player, `random.bowhit`, 1, 1.5, 1, entity.blockPos); // random.pop | random.pop2
                 playSoundToPlayer(player, `ambient.weather.lightning.impact`, 1, 1.5, 1, entity.blockPos);
