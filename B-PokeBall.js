@@ -415,7 +415,7 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             }
 
             const isVillager = villagerTypeNames.includes(spawnedEntity.type);
-            const professionKey = isVillager && entityNbt.getData("PreferredProfession");
+            const professionKey = isVillager && spawnedEntity.getNbt().getData("PreferredProfession");
             const villagerProfession = isVillager
                 ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
                 : "";
