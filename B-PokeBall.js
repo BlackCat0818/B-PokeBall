@@ -421,11 +421,11 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             const releaseHealth = `${entityHealth}`;
 
             // 给玩家更友好的释放提示，包含职业与血量
-            player.tell(plugin_prefix + `§a释放成功 §7| §f${releaseDisplayName} §7| §e血量: §c${releaseHealth}`);
-            logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${releaseDisplayName}(血量${releaseHealth})，位置：${spawnPos}!`);
+            player.tell(plugin_prefix + `§a释放成功 §7| §f${releaseDisplayName} §7| §c${releaseHealth}`);
+            logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${releaseDisplayName}(${releaseHealth})，位置：${spawnPos}!`);
 
             // 写入日志时使用更完整的信息（不带颜色码，便于分析）
-            writeLog("release", `${player.realName}`, "释放", `${releaseDisplayName} 血量:${releaseHealth}`, `${spawnedEntity.blockPos}`);
+            writeLog("release", `${player.realName}`, "释放", `${releaseDisplayName} ${releaseHealth}`, `${spawnedEntity.blockPos}`);
 
             playSoundToPlayer(player, `beacon.activate`, 1, 1.5, 1, player.blockPos);
 
@@ -733,11 +733,11 @@ mc.listen("onProjectileHitEntity",
                 const entityHealth = `${entity.health} / ${entity.maxHealth}`;
 
                 // 更加美观的广播信息，包含职业（若为村民）、血量与位置
-                mc.broadcast(plugin_prefix + `§6${sourceName} §f捕获了 §a${capturedEntityName} §7${vpfs} §7| §e血量: §c${entityHealth}`); // §7| §b位置: §f${entity.blockPos}
+                mc.broadcast(plugin_prefix + `§6${sourceName} §f捕获了 §a${capturedEntityName} §7${vpfs} §7| (§e血量: §c${entityHealth})`); // §7| §b位置: §f${entity.blockPos}
                 logger.warn(`【${type === "dispenser" ? "发射器捕捉" : "玩家捕捉"}】${type !== "dispenser" ? `玩家 ${sourceName}` : sourceName} 成功捕捉了 ${capturedEntityName}${vpfs}(血量${entityHealth})，位置：${entity.blockPos}!`);
 
                 // 日志记录使用无颜色的结构化信息
-                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName} ${vpfs} 血量:${entityHealth}`, `${entity.blockPos}`);
+                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName} ${vpfs} (血量${entityHealth})`, `${entity.blockPos}`);
 
                 playSoundToPlayer(player, `random.bowhit`, 1, 1.5, 1, entity.blockPos); // random.pop | random.pop2
                 playSoundToPlayer(player, `ambient.weather.lightning.impact`, 1, 1.5, 1, entity.blockPos);
