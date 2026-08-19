@@ -408,7 +408,7 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             const spawnPos = new FloatPos(x + 0.5, y, z + 0.5, block.pos.dimid);
 
             // 释放生物主要逻辑：先修改生物的NBT数据，包括坐标，然后再生成生物
-            const spawnedEntity = spawnEntityWithSNBT(entityNameSpace, spawnPos, nbt);
+            const spawnedEntity = spawnEntityWithSNBT(entityNameSpace, spawnPos, snbt);
             if (!spawnedEntity) {
                 logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: spawnEntityWithSNBT 返回的 spawnedEntity 为 ${spawnedEntity}`);
                 return;
