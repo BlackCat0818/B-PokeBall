@@ -408,9 +408,13 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             const spawnPos = new FloatPos(x + 0.5, y, z + 0.5, block.pos.dimid);
 
             // 释放生物主要逻辑：先修改生物的NBT数据，包括坐标，然后再生成生物
-            spawnEntityWithSNBT(entityNameSpace, spawnPos, nbt);
+            const spawnedEntity = spawnEntityWithSNBT(entityNameSpace, spawnPos, nbt);
+            if (!spawnedEntity) {
+                logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: spawnEntityWithSNBT 返回的 spawnedEntity 为 ${spawnedEntity}`);
+                return;
+            }
 
-            const isVillager = villagerTypeNames.includes(entity.type);
+            const isVillager = villagerTypeNames.includes(spawnedEntity.type);
             const professionKey = isVillager && entityNbt.getData("PreferredProfession");
             const villagerProfession = isVillager
                 ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
@@ -419,7 +423,7 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(血量${entityHealth})§f!`);
             logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(血量${entityHealth})，位置：${spawnPos}!`);
 
-            writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${entity.blockPos}`);
+            writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${spawnedEntity.blockPos}`);
 
             playSoundToPlayer(player, `beacon.activate`, 1, 1.5, 1, player.blockPos);
 
@@ -943,7 +947,7 @@ function spawnEntityWithSNBT(entityName, pos, SNBT) {
 
         entity.setNbt(newNBT);
 
-        return true;
+        return entity;
 
     } catch (error) {
         logger.error(error.message);
