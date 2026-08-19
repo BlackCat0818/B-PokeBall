@@ -26,7 +26,7 @@
 */
 
 const PLUGIN_NAME = "B-PokeBall";
-const PLUGIN_VERSION = [1, 0, 0, Version.Release];
+const PLUGIN_VERSION = [1, 0, 1, Version.Release];
 const plugin_prefix = `§a§l[Poke] §r`;
 
 ll.registerPlugin(
@@ -397,9 +397,9 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
             };
 
             const entityNameSpace = nbt.getData("identifier");
-            logger.warn(`entityNameSpace 的值：${entityNameSpace}，数据类型：${typeof entityNameSpace}`);
+            //logger.warn(`entityNameSpace 的值：${entityNameSpace}，数据类型：${typeof entityNameSpace}`);
             if ([null, undefined].includes(entityNameSpace) || typeof entityNameSpace !== "string") {
-                logger.error(`尝试释放生物时发生错误，在 onUseItemOn 监听事件中：生物的命名空间名称 - entityNameSpace 的值为 ${entityNameSpace}`);
+                logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: 生物的命名空间名称 - entityNameSpace 的值为 ${entityNameSpace}`);
                 return;
             };
 
@@ -412,7 +412,7 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
                 const entity = mc.spawnMob(entityNameSpace, pos); // 先生成
 
                 if (!entity) {
-                    logger.error(`mc.spawnMob 生成生物失败：${entity}`);
+                    logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: mc.spawnMob 生成生物失败：${entity}`);
                 };
 
                 const entityNbt = entity.getNbt();
@@ -422,7 +422,7 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
                 //const name = I18nAPI.get(entity.getTranslateKey(), [], "zh_CN");
 
                 if (!entityNbt) {
-                    logger.error(`onUseItemOn : entityNameSpace : ${entityNameSpace}`)
+                    logger.error(`玩家 ${player.realName} 在 onUseItemOn 中执行释放生物时失败: entity : ${entity} | entityNbt : ${entityNbt}`);
                     return;
                 };
 
