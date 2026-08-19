@@ -416,14 +416,16 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
 
             const isVillager = villagerTypeNames.includes(spawnedEntity.type);
             const professionKey = isVillager && spawnedEntity.getNbt().getData("PreferredProfession");
-            const villagerProfession = isVillager
-                ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
-                : "";
+            const villagerProfessionPlain = isVillager ? (professionKey ? ProfessionStrTransition[professionKey] : "无职业") : "";
+            const releaseDisplayName = isVillager ? `${entityName} (职业：${villagerProfessionPlain})` : `${entityName}`;
+            const releaseHealth = `${entityHealth}`;
 
-            player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(${entityHealth})§f!`);
-            logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(${entityHealth})，位置：${spawnPos}!`);
+            // 给玩家更友好的释放提示，包含职业与血量
+            player.tell(plugin_prefix + `§a释放成功 §7| §f${releaseDisplayName} §7| §e血量: §c${releaseHealth}`);
+            logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${releaseDisplayName}(血量${releaseHealth})，位置：${spawnPos}!`);
 
-            writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${spawnedEntity.blockPos}`);
+            // 写入日志时使用更完整的信息（不带颜色码，便于分析）
+            writeLog("release", `${player.realName}`, "释放", `${releaseDisplayName} 血量:${releaseHealth}`, `${spawnedEntity.blockPos}`);
 
             playSoundToPlayer(player, `beacon.activate`, 1, 1.5, 1, player.blockPos);
 
@@ -726,13 +728,16 @@ mc.listen("onProjectileHitEntity",
                 };
 
                 const pfs = entityNbt.getData("PreferredProfession");
-                const vpfs = villagerTypeNames.includes(entity.type) ? (pfs != null ? `(职业：${ProfessionStrTransition[pfs]})` : `无职业`) : "";
+                const vpfsPlain = villagerTypeNames.includes(entity.type) ? (pfs != null ? ProfessionStrTransition[pfs] : "无职业") : "";
+                const vpfs = villagerTypeNames.includes(entity.type) ? `(${vpfsPlain === "" ? "无职业" : `职业：${vpfsPlain}`})` : "";
                 const entityHealth = `${entity.health} / ${entity.maxHealth}`;
 
-                mc.broadcast(plugin_prefix + `${sourceName} 抓住了一只${capturedEntityName}${vpfs}(血量${entityHealth})!`); // ，位置：${entity.blockPos}
+                // 更加美观的广播信息，包含职业（若为村民）、血量与位置
+                mc.broadcast(plugin_prefix + `§6${sourceName} §f捕获了 §a${capturedEntityName} §7${vpfs} §7| §e血量: §c${entityHealth}`); // §7| §b位置: §f${entity.blockPos}
                 logger.warn(`【${type === "dispenser" ? "发射器捕捉" : "玩家捕捉"}】${type !== "dispenser" ? `玩家 ${sourceName}` : sourceName} 成功捕捉了 ${capturedEntityName}${vpfs}(血量${entityHealth})，位置：${entity.blockPos}!`);
 
-                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName}(血量${entityHealth})`, `${entity.blockPos}`);
+                // 日志记录使用无颜色的结构化信息
+                writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName} ${vpfs} 血量:${entityHealth}`, `${entity.blockPos}`);
 
                 playSoundToPlayer(player, `random.bowhit`, 1, 1.5, 1, entity.blockPos); // random.pop | random.pop2
                 playSoundToPlayer(player, `ambient.weather.lightning.impact`, 1, 1.5, 1, entity.blockPos);
