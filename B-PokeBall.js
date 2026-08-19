@@ -26,7 +26,7 @@
 */
 
 const PLUGIN_NAME = "B-PokeBall";
-const PLUGIN_VERSION = [0, 9, 9, Version.Beta];
+const PLUGIN_VERSION = [1, 0, 0, Version.Release];
 const plugin_prefix = `§a§l[Poke] §r`;
 
 ll.registerPlugin(
@@ -432,8 +432,8 @@ mc.listen("onUseItemOn", (player, item, block, side, pos) => { // 75行释放生
                     ? (professionKey ? `(职业：${ProfessionStrTransition[professionKey]})` : "无职业")
                     : "";
 
-                player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(${entityHealth})§f!`);
-                logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(${entityHealth})，位置：${spawnPos}!`);
+                player.tell(plugin_prefix + `成功释放：${entityName}${villagerProfession}(血量${entityHealth})§f!`);
+                logger.warn(`【玩家释放】玩家 ${player.realName} 成功释放 ${entityName}${villagerProfession}(血量${entityHealth})，位置：${spawnPos}!`);
 
                 writeLog("release", `${player.realName}`, "释放", `${entityName}(${entityHealth})`, `${entity.blockPos}`);
 
@@ -746,7 +746,7 @@ mc.listen("onProjectileHitEntity",
                 const entityHealth = `${entity.health} / ${entity.maxHealth}`;
 
                 mc.broadcast(plugin_prefix + `${sourceName} 抓住了一只${capturedEntityName}${vpfs}(${entityHealth})!`); // ，位置：${entity.blockPos}
-                logger.warn(`【${type === "dispenser" ? "发射器捕捉" : "玩家捕捉"}】${type !== "dispenser" ? `玩家 ${sourceName}` : sourceName} 成功捕捉了 ${capturedEntityName}${vpfs}(${entityHealth})，位置：${entity.blockPos}!`);
+                logger.warn(`【${type === "dispenser" ? "发射器捕捉" : "玩家捕捉"}】${type !== "dispenser" ? `玩家 ${sourceName}` : sourceName} 成功捕捉了 ${capturedEntityName}${vpfs}(血量${entityHealth})，位置：${entity.blockPos}!`);
 
                 writeLog("catch", `${sourceName}`, "捕捉", `${capturedEntityName}(${entityHealth})`, `${entity.blockPos}`);
 
