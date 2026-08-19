@@ -1,0 +1,22 @@
+{
+    "entry": "B-PokeCatch.js",
+    "name": "B-PokeCatch",
+    "type": "lse-quickjs",
+    "version": "0.5.7-beta",
+    "author": "BlackCat",
+    "description": "精灵球插件——捕捉生物&释放生物",
+    "extraInfo": {
+        "作者qq": "3096514973"
+    },
+    "dependencies": [
+        {
+            "name": "legacy-script-engine-quickjs"
+        },
+        {
+            "name": "GMLIB-LegacyRemoteCallApi"
+        },
+        {
+            "name": "GMLIB"
+        }
+    ]
+}
