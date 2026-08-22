@@ -167,7 +167,7 @@ function reloadConfig() {
             } else {
                 configCache._capturableSet = new Set();
             }
-            logger.info(`配置文件已热更新，可捕捉生物数量：${configCache._capturableSet.size}`);
+            // logger.info(`配置文件已热更新，可捕捉生物数量：${configCache._capturableSet.size}`);
         }
     } catch (e) {
         logger.error(`热重载配置文件失败: ${e}`);
