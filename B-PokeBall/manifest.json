@@ -2,7 +2,7 @@
     "entry": "B-PokeBall.js",
     "name": "B-PokeBall",
     "type": "lse-quickjs",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "BlackCat",
     "description": "精灵球插件：捕捉与释放生物",
     "extraInfo": {

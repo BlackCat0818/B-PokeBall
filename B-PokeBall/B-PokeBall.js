@@ -167,7 +167,7 @@ function reloadConfig() {
             } else {
                 configCache._capturableSet = new Set();
             }
-            logger.info(`配置文件已热更新，可捕捉生物数量：${configCache._capturableSet.size}`);
+            // logger.info(`配置文件已热更新，可捕捉生物数量：${configCache._capturableSet.size}`);
         }
     } catch (e) {
         logger.error(`热重载配置文件失败: ${e}`);
@@ -383,7 +383,7 @@ const debounceTime = 200;
 mc.listen("onUseItemOn", (player, item, block, side, pos) => {
     try {
         if (item.isNull() || item.type !== normalItem || item.lore.length < 9) return;
-        if (filterList.includes(item.type)) return;
+        if (filterList.includes(block.type)) return;
         if (block.hasContainer() || block.isButtonBlock || block.isDoorBlock ||
             block.isThinFenceBlock || block.isFenceGateBlock || block.isFenceBlock ||
             block.type.endsWith("_trapdoor")) return;
