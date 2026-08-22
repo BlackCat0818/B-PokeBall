@@ -2,29 +2,6 @@
 /// <reference path="c:\LSE-API/dts/helperlib/src/index.d.ts"/> 
 
 
-/*
-
-重构进度：
-- [×] 数据和配置文件的初始化
-- [×] 真指令注册
-- [×] onUseItemOn 事件 释放生物
-- [×] 完善 onProjectileHitEntity 事件
-- [×] 完善 onProjectileHitBlock 事件
-- [×] 完善 spawnOrReturnFailedItem 函数
-- [ ] lore 长度 数据读取方式可能需要修改
-- [ ] 增加 getConfig 为 null 时的异常处理
-- [ ] 在部分代码块增加 try catch
-- [ ] 整体测试代码
-
-待办：
-- [ ] 捕捉、释放生物增加日志
-- [ ] 针对不同生物设置不同的捕捉成功概率
-- [ ] 把 GMLIB 和 GMLIB-LegacyRemoteCallApi 设置为可选前置依赖GMLIB-LegacyRemoteCallApi
-- [ ] 支持发射器、投掷器释放生物（困难）
-- [ ] 支持更多球类，例如大师球...
-
-*/
-
 const PLUGIN_NAME = "B-PokeBall";
 const PLUGIN_VERSION = [1, 0, 1, Version.Release];
 const plugin_prefix = `§a§l[Poke] §r`;
@@ -57,13 +34,6 @@ function writeLog(type, source, action, entity, pos) {
     const line = `${timeStr},${source},${action},${entity},${pos}`;
     File.writeLine(logPath, line);
 };
-
-// 调试代码
-/*
-mc.listen("onChat", (player, msg) => {
-    if (msg === "调试") logger.warn(player.getHand()?.getNbt()?.toSNBT(4));
-});
-*/
 
 const { I18nAPI, Minecraft } = require('./GMLIB-LegacyRemoteCallApi/lib/GMLIB_API-JS'); // 翻译实体名称用的
 

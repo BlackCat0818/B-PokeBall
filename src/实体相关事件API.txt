@@ -1,0 +1,34 @@
+"onProjectileHitEntity" - 实体被弹射物击中
+监听函数原型 function(entity,source)
+参数：
+entity: Entity
+被击中的实体对象
+source : Entity
+发射的弹射物实体（如箭）
+拦截事件：不可以拦截
+
+"onSpawnProjectile" - 弹射物创建
+监听函数原型 function(shooter,type)
+参数：
+
+shooter : Entity
+发射弹射物的的实体对象
+
+type : String
+弹射物标准类型名
+
+拦截事件：函数返回 false
+
+注：已知可拦截的弹射物有鸡蛋、末影珍珠、雪球、三叉戟、箭、钓竿（鱼钩）。
+
+"onProjectileCreated" - 弹射物创建完毕
+监听函数原型 function(shooter,entity)
+参数：
+
+shooter : Entity
+创建此弹射物的的实体对象
+
+entity : Entity
+被创建的弹射物实体对象
+
+拦截事件：不可以拦截
